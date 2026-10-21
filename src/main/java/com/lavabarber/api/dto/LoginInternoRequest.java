@@ -1,0 +1,9 @@
+package com.lavabarber.api.dto;
+
+import jakarta.validation.constraints.NotBlank;
+
+public record LoginInternoRequest(
+        @NotBlank String username,
+        @NotBlank String password
+) {
+}

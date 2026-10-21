@@ -1,0 +1,38 @@
+# Blueprint de Render para el backend. La base de datos es EXTERNA (Supabase): no se crea aca.
+# Ningun secreto va en este archivo: todas las claves son "sync: false" y se cargan a mano en el
+# panel de Render (Environment). Este archivo si puede subirse a GitHub.
+# El plan free es para PROBAR: se duerme a los 15 min sin trafico y tiene solo 512 MB.
+services:
+  - type: web
+    name: chimpi-api
+    runtime: docker
+    plan: free
+    # Endpoint publico que consulta la base: si responde, el servicio esta sano.
+    healthCheckPath: /api/negocios
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: TZ
+        value: America/Asuncion
+      # --- Se cargan a mano en el panel de Render (sync: false = el valor NO viaja en este archivo) ---
+      # Base de datos (Supabase, Session pooler, puerto 5432), formato JDBC:
+      #   jdbc:postgresql://aws-0-REGION.pooler.supabase.com:5432/postgres?sslmode=require
+      - key: DB_URL
+        sync: false
+      - key: DB_USER              # en el pooler es "postgres.REFERENCIA_DEL_PROYECTO"
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      # Secretos propios. APP_ENCRYPTION_KEY se elige UNA vez y nunca se cambia (cifra las cedulas).
+      - key: JWT_SECRET
+        sync: false
+      - key: APP_ENCRYPTION_KEY
+        sync: false
+      - key: CORS_ALLOWED_ORIGINS   # URL del backoffice, ej: https://chimpi-admin.onrender.com
+        sync: false
+      - key: NEGOCIO_NOMBRE
+        sync: false
+      - key: ADMIN_USERNAME         # solo el primer arranque
+        sync: false
+      - key: ADMIN_PASSWORD         # solo el primer arranque, minimo 10 caracteres
+        sync: false
